@@ -1,0 +1,13 @@
+{
+  "name": "mygymbro",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/maven.mjs",
+    "start": "node scripts/start.mjs",
+    "test:neon": "node scripts/verify-neon.mjs"
+  },
+  "dependencies": {
+    "@neon/config": "^1.10.2",
+    "@neon/env": "^1.6.10"
+  }
+}
