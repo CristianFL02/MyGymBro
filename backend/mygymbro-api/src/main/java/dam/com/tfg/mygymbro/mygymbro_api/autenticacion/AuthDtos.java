@@ -1,5 +1,6 @@
 package dam.com.tfg.mygymbro.mygymbro_api.autenticacion;
 
+import dam.com.tfg.mygymbro.mygymbro_api.usuario.Usuario;
 import jakarta.validation.constraints.*;
 
 import java.time.Instant;

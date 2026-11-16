@@ -1,5 +1,9 @@
 package dam.com.tfg.mygymbro.mygymbro_api.autenticacion;
 
+import dam.com.tfg.mygymbro.mygymbro_api.usuario.Rol;
+import dam.com.tfg.mygymbro.mygymbro_api.usuario.RolRepository;
+import dam.com.tfg.mygymbro.mygymbro_api.usuario.Usuario;
+import dam.com.tfg.mygymbro.mygymbro_api.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;

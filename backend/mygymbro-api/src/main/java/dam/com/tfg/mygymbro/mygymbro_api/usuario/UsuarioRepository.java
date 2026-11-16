@@ -1,4 +1,4 @@
-package dam.com.tfg.mygymbro.mygymbro_api.autenticacion;
+package dam.com.tfg.mygymbro.mygymbro_api.usuario;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
@@ -14,4 +14,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select u from Usuario u where u.email = :email")
     Optional<Usuario> findLockedByEmail(@Param("email") String email);
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select u from Usuario u where u.id = :id")
+    Optional<Usuario> findLockedById(@Param("id") Long id);
 }

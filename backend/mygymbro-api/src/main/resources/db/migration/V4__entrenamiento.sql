@@ -1,0 +1,91 @@
+CREATE TABLE rutinas (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(30) NOT NULL,
+    usuario_id BIGINT NOT NULL,
+    rutina_origen_id INTEGER,
+    eliminada BOOLEAN NOT NULL,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (rutina_origen_id) REFERENCES rutinas(id)
+);
+CREATE TABLE dias_rutina (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    rutina_id INTEGER NOT NULL,
+    nombre VARCHAR(15) NOT NULL,
+    orden INTEGER NOT NULL,
+    FOREIGN KEY (rutina_id) REFERENCES rutinas(id),
+    UNIQUE (rutina_id, orden)
+);
+CREATE TABLE ejercicios (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    categoria VARCHAR(255) NOT NULL,
+    equipamiento VARCHAR(255) NOT NULL,
+    tipo_medicion VARCHAR(255) NOT NULL,
+    visibilidad VARCHAR(255) NOT NULL,
+    creador_id BIGINT,
+    FOREIGN KEY (creador_id) REFERENCES usuarios(id)
+);
+CREATE TABLE ejercicio_musculos_primarios (
+    ejercicio_id INTEGER NOT NULL,
+    posicion INTEGER NOT NULL,
+    musculo VARCHAR(255) NOT NULL,
+    PRIMARY KEY (ejercicio_id, posicion),
+    FOREIGN KEY (ejercicio_id) REFERENCES ejercicios(id)
+);
+CREATE TABLE ejercicio_musculos_secundarios (
+    ejercicio_id INTEGER NOT NULL,
+    posicion INTEGER NOT NULL,
+    musculo VARCHAR(255) NOT NULL,
+    PRIMARY KEY (ejercicio_id, posicion),
+    FOREIGN KEY (ejercicio_id) REFERENCES ejercicios(id)
+);
+CREATE TABLE ejercicios_rutina (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    dia_rutina_id INTEGER NOT NULL,
+    ejercicio_id INTEGER NOT NULL,
+    series_objetivo INTEGER NOT NULL,
+    repeticiones_objetivo INTEGER NOT NULL,
+    FOREIGN KEY (dia_rutina_id) REFERENCES dias_rutina(id),
+    FOREIGN KEY (ejercicio_id) REFERENCES ejercicios(id)
+);
+CREATE TABLE asignaciones_rutina (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    rutina_id INTEGER NOT NULL,
+    cliente_id BIGINT NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    FOREIGN KEY (rutina_id) REFERENCES rutinas(id),
+    FOREIGN KEY (cliente_id) REFERENCES usuarios(id)
+);
+CREATE TABLE sesiones_entrenamiento (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    fecha TIMESTAMP(6) NOT NULL,
+    duracion_min INTEGER NOT NULL,
+    sensacion INTEGER NOT NULL,
+    finalizada BOOLEAN NOT NULL,
+    usuario_id BIGINT NOT NULL,
+    rutina_id INTEGER,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (rutina_id) REFERENCES rutinas(id)
+);
+CREATE INDEX idx_sesiones_entrenamiento_historial ON sesiones_entrenamiento(usuario_id, finalizada, fecha);
+CREATE TABLE registros_ejercicio (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sesion_id INTEGER NOT NULL,
+    ejercicio_id INTEGER NOT NULL,
+    FOREIGN KEY (sesion_id) REFERENCES sesiones_entrenamiento(id),
+    FOREIGN KEY (ejercicio_id) REFERENCES ejercicios(id)
+);
+CREATE TABLE series_registradas (
+    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    registro_id INTEGER NOT NULL,
+    numero INTEGER NOT NULL,
+    repeticiones INTEGER NOT NULL,
+    carga DOUBLE NOT NULL,
+    tiempo_seg INTEGER NOT NULL,
+    distancia_m DOUBLE NOT NULL,
+    rpe INTEGER NOT NULL,
+    descanso_seg INTEGER NOT NULL,
+    notas VARCHAR(255),
+    FOREIGN KEY (registro_id) REFERENCES registros_ejercicio(id),
+    UNIQUE (registro_id, numero)
+);

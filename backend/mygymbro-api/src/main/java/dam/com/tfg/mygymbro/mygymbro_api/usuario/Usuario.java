@@ -1,4 +1,4 @@
-package dam.com.tfg.mygymbro.mygymbro_api.autenticacion;
+package dam.com.tfg.mygymbro.mygymbro_api.usuario;
 
 import jakarta.persistence.*;
 
@@ -30,7 +30,7 @@ public class Usuario {
     protected Usuario() {
     }
 
-    Usuario(String nombre, String email, String contrasenaHash, Set<Rol> roles) {
+    public Usuario(String nombre, String email, String contrasenaHash, Set<Rol> roles) {
         this.nombre = nombre;
         this.email = email;
         this.contrasenaHash = contrasenaHash;
@@ -49,23 +49,23 @@ public class Usuario {
         return email;
     }
 
-    String getContrasenaHash() {
+    public String getContrasenaHash() {
         return contrasenaHash;
     }
 
-    boolean isEmailVerificado() {
+    public boolean isEmailVerificado() {
         return emailVerificado;
     }
 
-    void verificarEmail() {
+    public void verificarEmail() {
         emailVerificado = true;
     }
 
-    void actualizarHash(String hash) {
+    public void actualizarHash(String hash) {
         contrasenaHash = hash;
     }
 
-    void vincularGoogle(String sub) {
+    public void vincularGoogle(String sub) {
         googleSub = sub;
     }
 

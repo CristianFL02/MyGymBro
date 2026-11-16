@@ -1,4 +1,4 @@
-package dam.com.tfg.mygymbro.mygymbro_api.autenticacion;
+package dam.com.tfg.mygymbro.mygymbro_api.usuario;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
