@@ -11,6 +11,15 @@ import java.util.TreeMap;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
+    @ExceptionHandler(IllegalArgumentException.class)
+    ResponseEntity<ApiError> argumento(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(new ApiError(400, ex.getMessage()));
+    }
+
+    @ExceptionHandler({IllegalStateException.class, org.springframework.dao.OptimisticLockingFailureException.class})
+    ResponseEntity<ApiError> estadoIncompatible(Exception ex) {
+        return ResponseEntity.status(409).body(new ApiError(409, "El estado ha cambiado o no permite esta operación"));
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     ResponseEntity<ApiError> validacion(MethodArgumentNotValidException ex) {
         var campos = new TreeMap<String, String>();

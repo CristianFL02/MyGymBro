@@ -2,15 +2,19 @@ package dam.com.tfg.mygymbro.mygymbro_api.entrenamiento;
 
 import jakarta.persistence.*;
 import dam.com.tfg.mygymbro.mygymbro_api.usuario.Usuario;
+
 import java.util.*;
 
 @Entity
 @Table(name = "ejercicios")
 public class Ejercicio {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(nullable = false)
     private String nombre;
+    @Column(length = 2000)
+    private String descripcionTecnica;
     @Column(nullable = false)
     private String categoria;
     @ElementCollection
@@ -35,7 +39,8 @@ public class Ejercicio {
     @JoinColumn(name = "creador_id")
     private Usuario creador;
 
-    protected Ejercicio() {}
+    protected Ejercicio() {
+    }
 
     public Ejercicio(String nombre, String categoria, String[] musculosPrimarios,
                      String[] musculosSecundarios, String equipamiento,
@@ -61,13 +66,50 @@ public class Ejercicio {
         return copia;
     }
 
-    public int getId() { return id; }
-    public String getNombre() { return nombre; }
-    public String getCategoria() { return categoria; }
-    public String[] getMusculosPrimarios() { return musculosPrimarios.toArray(String[]::new); }
-    public String[] getMusculosSecundarios() { return musculosSecundarios.toArray(String[]::new); }
-    public String getEquipamiento() { return equipamiento; }
-    public TipoMedicion getTipoMedicion() { return tipoMedicion; }
-    public Visibilidad getVisibilidad() { return visibilidad; }
-    public Usuario getCreador() { return creador; }
+    public int getId() {
+        return id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getDescripcionTecnica() {
+        return descripcionTecnica;
+    }
+
+    public void describirTecnica(String descripcion) {
+        if (descripcion != null && descripcion.length() > 2000) {
+            throw new IllegalArgumentException("La técnica admite hasta 2000 caracteres");
+        }
+        descripcionTecnica = descripcion;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public String[] getMusculosPrimarios() {
+        return musculosPrimarios.toArray(String[]::new);
+    }
+
+    public String[] getMusculosSecundarios() {
+        return musculosSecundarios.toArray(String[]::new);
+    }
+
+    public String getEquipamiento() {
+        return equipamiento;
+    }
+
+    public TipoMedicion getTipoMedicion() {
+        return tipoMedicion;
+    }
+
+    public Visibilidad getVisibilidad() {
+        return visibilidad;
+    }
+
+    public Usuario getCreador() {
+        return creador;
+    }
 }

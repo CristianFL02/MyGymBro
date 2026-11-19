@@ -21,8 +21,13 @@ public class SesionEntrenamiento {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rutina_id")
     private Rutina rutina;
+    private Integer diaRutinaOrigenId;
+    private String nombreDiaOrigen;
+    @Version
+    private long version;
+    private Instant ultimaModificacion;
     @OneToMany(mappedBy = "sesion", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("id ASC")
+    @OrderBy("orden ASC, id ASC")
     private List<RegistroEjercicio> registros = new ArrayList<>();
 
     protected SesionEntrenamiento() {}
@@ -54,11 +59,39 @@ public class SesionEntrenamiento {
     }
 
     public void finalizar() {
+        if (registros.isEmpty()) throw new IllegalStateException("La sesión necesita al menos un ejercicio registrado");
         if (registros.stream().anyMatch(registro -> registro.getSeries().isEmpty())) {
             throw new IllegalStateException("Cada ejercicio registrado debe tener al menos una serie");
         }
         finalizada = true;
     }
+
+    public void copiarDia(DiaRutina dia) {
+        if (!registros.isEmpty() || diaRutinaOrigenId != null) throw new IllegalStateException("La sesión ya está iniciada");
+        diaRutinaOrigenId = dia.getId();
+        nombreDiaOrigen = dia.getNombre();
+        for (EjercicioRutina entrada : dia.getEjercicios()) {
+            RegistroEjercicio registro = anadirRegistro(entrada.getEjercicio());
+            registro.configurar(PlanRegistro.de(entrada), entrada.getAproximaciones(), null);
+            registro.copiarPropuesta(entrada.getEjercicio(), entrada.getAlternativas());
+        }
+    }
+
+    public void guardarBorrador(int duracionMin) {
+        if (finalizada) throw new IllegalStateException("No se puede editar una sesión finalizada");
+        if (duracionMin < 0) throw new IllegalArgumentException("Duración negativa");
+        this.duracionMin = duracionMin;
+        // Marca también las modificaciones de hijos para el control de concurrencia.
+        ultimaModificacion = Instant.now();
+    }
+
+    public void conservarRegistros(Set<Integer> ids) {
+        registros.removeIf(registro -> !ids.contains(registro.getId()));
+    }
+
+    public Integer getDiaRutinaOrigenId() { return diaRutinaOrigenId; }
+    public String getNombreDiaOrigen() { return nombreDiaOrigen; }
+    public long getVersion() { return version; }
 
     public int getId() { return id; }
     public Instant getFecha() { return fecha; }
